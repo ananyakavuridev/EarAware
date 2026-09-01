@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ear Aware</title>
+</head>
+
+<body>
+
+    <h1>Ear Aware</h1>
+
+    <button id="startAudio">Start Microphone</button>
+
+    <p id="status">Microphone not started</p>
+
+    <script>
+        const startButton = document.getElementById("startAudio");
+        const status = document.getElementById("status");
+
+        let microphoneStream = null;
+
+        startButton.addEventListener("click", async () => {
+            try {
+                microphoneStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true
+                });
+
+                status.textContent = "Microphone is working";
+                console.log("Microphone stream:", microphoneStream);
+
+            } catch (error) {
+                console.error(error);
+                status.textContent = "Microphone permission denied/unavailable.";
+            }
+        });
+    </script>
+
+</body>
+</html>
