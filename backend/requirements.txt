@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+numpy
+scipy
+soundfile
+torch
+torchaudio
+silero-vad
+faster-whisper
+speechbrain
+scikit-learn
+websockets
