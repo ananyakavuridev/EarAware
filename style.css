@@ -19,3 +19,18 @@
 .interim {
     font-style: italic;
 }
+#replaySection {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+#replayButton {
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+#replayStatus {
+    font-size: 14px;
+}
