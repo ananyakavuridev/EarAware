@@ -1,55 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Ear Aware</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1>Ear Aware</h1>
+    <div class="app">
 
-    <button id="startAudio">Start Microphone</button>
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon">EA</div>
 
-    <p id="status">Microphone not started</p>
+                <div>
+                    <h1>Ear Aware</h1>
+                    <p>Personal hearing assistance</p>
+                </div>
+            </div>
 
-    <script>
-        const startButton = document.getElementById("startAudio");
-        const status = document.getElementById("status");
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span>System ready</span>
+            </div>
+        </header>
 
-        let microphoneStream = null;
 
-        startButton.addEventListener("click", async () => {
-            try {
-                microphoneStream = await navigator.mediaDevices.getUserMedia({
-                    audio: true
-                });
+        <!-- Main -->
+        <main>
 
-                status.textContent = "Microphone is working";
-                console.log("Microphone stream:", microphoneStream);
+            <section class="welcome">
+                <p class="eyebrow">AUDIO ASSISTANCE</p>
 
-            } catch (error) {
-                console.error(error);
-                status.textContent = "Microphone permission denied/unavailable.";
-            }
-        });
-    </script>
-    <section id="captionsSection">
+                <h2>
+                    Hear what matters.
+                </h2>
 
-    <h2>Live Captions</h2>
+                <p>
+                    Ear Aware uses your microphone to process and
+                    enhance surrounding speech and sound.
+                </p>
+            </section>
 
-    <button id="captionButton">
-        Start Captions
-    </button>
 
-    <p id="captionStatus">
-        Status: Captions stopped
-    </p>
+            <!-- Microphone Card -->
+            <section class="card microphone-card">
 
-    <div id="captionArea">
-        No captions yet.
+                <div class="card-header">
+
+                    <div>
+                        <p class="card-label">INPUT</p>
+                        <h3>Microphone</h3>
+                    </div>
+
+                    <div id="micStatusBadge" class="badge offline">
+                        <span></span>
+                        OFF
+                    </div>
+
+                </div>
+
+
+                <div class="mic-content">
+
+                    <div class="mic-visual">
+                        <div class="mic-circle">
+                            <span>🎙</span>
+                        </div>
+                    </div>
+
+                    <div class="mic-info">
+
+                        <h4 id="status">
+                            Microphone is off
+                        </h4>
+
+                        <p id="statusDescription">
+                            Microphone access is required to use
+                            Ear Aware.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Calibration placeholder -->
+            <section class="card upcoming-card">
+
+                <div class="upcoming-icon">
+                    01
+                </div>
+
+                <div>
+                    <p class="card-label">NEXT STEP</p>
+                    <h3>Hearing Calibration</h3>
+                    <p>
+                        A short tone-based test will personalize
+                        the audio experience.
+                    </p>
+                </div>
+
+                <span class="coming-soon">
+                    Coming next
+                </span>
+
+            </section>
+
+        </main>
+
+
+        <footer>
+            <p>Ear Aware · Audio assistance prototype</p>
+        </footer>
+
     </div>
 
-</section>  
+
+    <script src="script.js"></script>
 
 </body>
 </html>
