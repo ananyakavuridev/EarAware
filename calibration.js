@@ -7,15 +7,6 @@ const calibrationFrequencies = [
     8000
 ];
 
-const frequencyDescriptions = {
-    250: "Low frequency",
-    500: "Low-mid frequency",
-    1000: "Speech range",
-    2000: "Speech clarity range",
-    4000: "High-mid frequency",
-    8000: "High frequency"
-};
-
 const testLevels = [
     0.025,
     0.04,
@@ -35,104 +26,64 @@ let gainNode = null;
 let calibrationRunning = false;
 
 const startCalibrationButton =
-    document.getElementById(
-        "startCalibrationButton"
-    );
+    document.getElementById("startCalibrationButton");
 
 const playToneButton =
-    document.getElementById(
-        "playToneButton"
-    );
+    document.getElementById("playToneButton");
 
 const stopToneButton =
-    document.getElementById(
-        "stopToneButton"
-    );
+    document.getElementById("stopToneButton");
 
 const heardButton =
-    document.getElementById(
-        "heardButton"
-    );
+    document.getElementById("heardButton");
 
 const notHeardButton =
-    document.getElementById(
-        "notHeardButton"
-    );
+    document.getElementById("notHeardButton");
 
 const restartCalibrationButton =
-    document.getElementById(
-        "restartCalibrationButton"
-    );
+    document.getElementById("restartCalibrationButton");
 
 const applyEQButton =
-    document.getElementById(
-        "applyEQButton"
-    );
+    document.getElementById("applyEQButton");
 
 const calibrationIntro =
-    document.getElementById(
-        "calibrationIntro"
-    );
+    document.getElementById("calibrationIntro");
 
 const calibrationTest =
-    document.getElementById(
-        "calibrationTest"
-    );
+    document.getElementById("calibrationTest");
 
 const calibrationResult =
-    document.getElementById(
-        "calibrationResult"
-    );
-
-const calibrationProgress =
-    document.getElementById(
-        "calibrationProgress"
-    );
-
-const calibrationProgressBar =
-    document.getElementById(
-        "calibrationProgressBar"
-    );
+    document.getElementById("calibrationResult");
 
 const frequencyDisplay =
-    document.getElementById(
-        "frequencyDisplay"
-    );
+    document.getElementById("frequencyDisplay");
 
 const frequencyDescription =
-    document.getElementById(
-        "frequencyDescription"
-    );
+    document.getElementById("frequencyDescription");
+
+const calibrationProgress =
+    document.getElementById("calibrationProgress");
+
+const calibrationProgressBar =
+    document.getElementById("calibrationProgressBar");
 
 const levelDisplay =
-    document.getElementById(
-        "levelDisplay"
-    );
+    document.getElementById("levelDisplay");
 
 const levelIndicator =
-    document.getElementById(
-        "levelIndicator"
-    );
+    document.getElementById("levelIndicator");
 
 const calibrationInstruction =
-    document.getElementById(
-        "calibrationInstruction"
-    );
+    document.getElementById("calibrationInstruction");
 
 const calibrationStatus =
-    document.getElementById(
-        "calibrationStatus"
-    );
+    document.getElementById("calibrationStatus");
 
 const profileResults =
-    document.getElementById(
-        "profileResults"
-    );
+    document.getElementById("profileResults");
 
 const profileSummary =
-    document.getElementById(
-        "profileSummary"
-    );
+    document.getElementById("profileSummary");
 
 
 function startCalibration() {
@@ -141,20 +92,11 @@ function startCalibration() {
 
     calibrationIndex = 0;
     currentLevel = 0;
-
     calibrationProfile = {};
-
     calibrationRunning = true;
 
     calibrationAudioContext =
         new AudioContext();
-
-    if (
-        calibrationAudioContext.state ===
-        "suspended"
-    ) {
-        calibrationAudioContext.resume();
-    }
 
     calibrationIntro.hidden = true;
     calibrationResult.hidden = true;
@@ -171,17 +113,13 @@ function showCurrentFrequency() {
     currentLevel = 0;
 
     const frequency =
-        calibrationFrequencies[
-            calibrationIndex
-        ];
+        calibrationFrequencies[calibrationIndex];
 
     frequencyDisplay.textContent =
         frequency + " Hz";
 
     frequencyDescription.textContent =
-        frequencyDescriptions[
-            frequency
-        ];
+        getFrequencyDescription(frequency);
 
     calibrationProgress.textContent =
         (calibrationIndex + 1) +
@@ -216,14 +154,11 @@ function updateLevelUI() {
         "Level " +
         (currentLevel + 1);
 
-    const percentage =
+    levelIndicator.style.width =
         (
             (currentLevel + 1) /
             testLevels.length
-        ) * 100;
-
-    levelIndicator.style.width =
-        percentage + "%";
+        ) * 100 + "%";
 }
 
 
@@ -254,15 +189,11 @@ function playTone() {
 
     oscillator.type = "sine";
 
-    oscillator.frequency.setValueAtTime(
-        frequency,
-        calibrationAudioContext.currentTime
-    );
+    oscillator.frequency.value =
+        frequency;
 
-    gainNode.gain.setValueAtTime(
-        level,
-        calibrationAudioContext.currentTime
-    );
+    gainNode.gain.value =
+        level;
 
     oscillator.connect(gainNode);
 
@@ -296,19 +227,13 @@ function stopTone() {
         }
 
         oscillator.disconnect();
-
         oscillator = null;
     }
 
     if (gainNode) {
 
         gainNode.disconnect();
-
         gainNode = null;
-    }
-
-    if (playToneButton) {
-        playToneButton.disabled = false;
     }
 
     if (stopToneButton) {
@@ -320,6 +245,9 @@ function stopTone() {
 function recordResponse(heard) {
 
     stopTone();
+
+    heardButton.disabled = true;
+    notHeardButton.disabled = true;
 
     const frequency =
         calibrationFrequencies[
@@ -349,12 +277,9 @@ function recordResponse(heard) {
             "Status: Level increased";
 
         calibrationInstruction.textContent =
-            "The level has been increased. Press Play Tone again.";
+            "The level has increased. Press Play Tone again.";
 
         playToneButton.disabled = false;
-
-        heardButton.disabled = true;
-        notHeardButton.disabled = true;
 
         return;
     }
@@ -379,9 +304,6 @@ function moveToNextFrequency() {
 
         return;
     }
-
-    calibrationStatus.textContent =
-        "Status: Frequency completed";
 
     setTimeout(
         showCurrentFrequency,
@@ -412,11 +334,6 @@ function finishCalibration() {
     displayCalibrationProfile();
 
     startCalibrationButton.disabled = false;
-
-    console.log(
-        "Calibration Profile:",
-        calibrationProfile
-    );
 }
 
 
@@ -448,11 +365,8 @@ function saveCalibrationProfile() {
                 gain = 2;
             }
 
-            else {
-                gain = 0;
-            }
-
-            eqProfile[frequency] = gain;
+            eqProfile[frequency] =
+                gain;
         }
     );
 
@@ -471,6 +385,11 @@ function saveCalibrationProfile() {
     );
 
     console.log(
+        "Calibration Profile:",
+        calibrationProfile
+    );
+
+    console.log(
         "Recommended EQ:",
         eqProfile
     );
@@ -481,7 +400,7 @@ function displayCalibrationProfile() {
 
     profileResults.innerHTML = "";
 
-    let boostCount = 0;
+    let needsBoost = 0;
 
     calibrationFrequencies.forEach(
         function(frequency) {
@@ -504,56 +423,21 @@ function displayCalibrationProfile() {
             frequencyElement.textContent =
                 frequency + " Hz";
 
-            const valueContainer =
-                document.createElement("div");
-
-            valueContainer.className =
-                "profile-value";
-
-            const bar =
-                document.createElement("div");
-
-            bar.className =
-                "profile-bar";
-
-            const fill =
-                document.createElement("div");
-
-            fill.className =
-                "profile-bar-fill";
-
-            const percentage =
-                Math.min(
-                    level /
-                    testLevels.length *
-                    100,
-                    100
-                );
-
-            fill.style.width =
-                percentage + "%";
-
-            bar.appendChild(fill);
-
-            const label =
+            const responseElement =
                 document.createElement("span");
 
-            label.className =
-                "profile-label";
+            responseElement.className =
+                "profile-response";
 
-            label.textContent =
+            responseElement.textContent =
                 getProfileLabel(level);
-
-            valueContainer.appendChild(bar);
-
-            valueContainer.appendChild(label);
 
             row.appendChild(
                 frequencyElement
             );
 
             row.appendChild(
-                valueContainer
+                responseElement
             );
 
             profileResults.appendChild(
@@ -561,23 +445,21 @@ function displayCalibrationProfile() {
             );
 
             if (level >= 3) {
-                boostCount++;
+                needsBoost++;
             }
         }
     );
 
-    if (boostCount === 0) {
+    if (needsBoost === 0) {
 
         profileSummary.textContent =
-            "Your responses were consistent across the tested frequencies. A minimal EQ adjustment is recommended.";
+            "Your responses were consistent across the tested frequencies. Minimal amplification is recommended.";
 
-    }
-
-    else {
+    } else {
 
         profileSummary.textContent =
-            boostCount +
-            " frequency range(s) showed a softer response during calibration. Ear Aware can apply additional relative amplification to those ranges.";
+            needsBoost +
+            " frequency range(s) showed a softer response and may benefit from additional amplification.";
     }
 }
 
@@ -608,32 +490,68 @@ function getProfileLabel(level) {
 }
 
 
+function getFrequencyDescription(frequency) {
+
+    if (frequency === 250) {
+        return "Low frequency";
+    }
+
+    if (frequency === 500) {
+        return "Low-mid frequency";
+    }
+
+    if (frequency === 1000) {
+        return "Speech range";
+    }
+
+    if (frequency === 2000) {
+        return "Speech clarity range";
+    }
+
+    if (frequency === 4000) {
+        return "High-mid frequency";
+    }
+
+    if (frequency === 8000) {
+        return "High frequency";
+    }
+
+    return "Audio frequency";
+}
+
+
 function applyRecommendedEQ() {
 
-    const eqProfile =
+    const savedEQ =
         localStorage.getItem(
             "earAwareEQ"
         );
 
-    if (!eqProfile) {
+    if (!savedEQ) {
         return;
     }
 
-    console.log(
-        "Applying EQ profile:",
-        JSON.parse(eqProfile)
-    );
+    const eqProfile =
+        JSON.parse(savedEQ);
 
-    profileSummary.textContent =
-        "Recommended EQ profile is ready to be applied to the audio processing chain.";
+    console.log(
+        "Applying EQ:",
+        eqProfile
+    );
 
     if (
         typeof applyCalibrationEQ ===
         "function"
     ) {
+
         applyCalibrationEQ(
-            JSON.parse(eqProfile)
+            eqProfile
         );
+
+    } else {
+
+        profileSummary.textContent =
+            "Calibration profile saved. EQ processing will use these settings.";
     }
 }
 
@@ -646,7 +564,6 @@ function restartCalibration() {
 
     calibrationIndex = 0;
     currentLevel = 0;
-
     calibrationProfile = {};
 
     calibrationTest.hidden = true;
@@ -660,7 +577,8 @@ function restartCalibration() {
     calibrationProgressBar.style.width =
         "0%";
 
-    startCalibrationButton.disabled = false;
+    startCalibrationButton.disabled =
+        false;
 }
 
 
@@ -669,10 +587,12 @@ startCalibrationButton.addEventListener(
     startCalibration
 );
 
+
 playToneButton.addEventListener(
     "click",
     playTone
 );
+
 
 stopToneButton.addEventListener(
     "click",
@@ -680,17 +600,17 @@ stopToneButton.addEventListener(
 
         stopTone();
 
-        calibrationStatus.textContent =
-            "Status: Tone stopped";
-
-        calibrationInstruction.textContent =
-            "Press Play Tone to continue.";
-
         heardButton.disabled = true;
         notHeardButton.disabled = true;
 
+        playToneButton.disabled = false;
+
+        calibrationStatus.textContent =
+            "Status: Tone stopped";
+
     }
 );
+
 
 heardButton.addEventListener(
     "click",
@@ -701,6 +621,7 @@ heardButton.addEventListener(
     }
 );
 
+
 notHeardButton.addEventListener(
     "click",
     function() {
@@ -710,12 +631,17 @@ notHeardButton.addEventListener(
     }
 );
 
+
 restartCalibrationButton.addEventListener(
     "click",
     restartCalibration
 );
 
-applyEQButton.addEventListener(
-    "click",
-    applyRecommendedEQ
-);
+
+if (applyEQButton) {
+
+    applyEQButton.addEventListener(
+        "click",
+        applyRecommendedEQ
+    );
+}

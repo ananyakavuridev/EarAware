@@ -88,7 +88,250 @@
                     </div>
 
                 </div>
+<section id="calibrationSection" class="card">
 
+    <div class="card-header">
+        <div>
+            <p class="card-label">HEARING PROFILE</p>
+            <h3>Hearing Calibration</h3>
+        </div>
+
+        <div class="calibration-counter" id="calibrationProgress">
+            0 / 6
+        </div>
+    </div>
+
+    <div id="calibrationIntro">
+
+        <div class="calibration-hero">
+            <div class="calibration-icon">◉</div>
+
+            <div>
+                <h4>Personalize your audio</h4>
+
+                <p>
+                    Ear Aware will play tones at different frequencies
+                    and levels to create a personalized hearing profile.
+                </p>
+            </div>
+        </div>
+
+        <div class="calibration-notice">
+
+            <strong>Before you begin</strong>
+
+            <ul>
+                <li>Use headphones for best results.</li>
+                <li>Set your device volume to a comfortable level.</li>
+                <li>Keep the volume unchanged during the test.</li>
+                <li>Stop immediately if any tone feels uncomfortable.</li>
+            </ul>
+
+        </div>
+
+        <button
+            id="startCalibrationButton"
+            class="primary-button">
+            Start Calibration
+        </button>
+
+    </div>
+
+
+    <div id="calibrationTest" hidden>
+
+        <div class="calibration-progress-track">
+            <div
+                id="calibrationProgressBar"
+                class="calibration-progress-bar">
+            </div>
+        </div>
+
+
+        <div class="frequency-card">
+
+            <span class="frequency-label">
+                TEST FREQUENCY
+            </span>
+
+            <h4 id="frequencyDisplay">
+                250 Hz
+            </h4>
+
+            <p id="frequencyDescription">
+                Low frequency
+            </p>
+
+        </div>
+
+
+        <div class="test-level">
+
+            <div class="level-header">
+
+                <span>Test level</span>
+
+                <span id="levelDisplay">
+                    Level 1
+                </span>
+
+            </div>
+
+            <div class="level-track">
+
+                <div
+                    id="levelIndicator"
+                    class="level-indicator">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <p
+            id="calibrationInstruction"
+            class="calibration-instruction">
+
+            Press Play Tone and listen carefully.
+
+        </p>
+
+
+        <div class="tone-controls">
+
+            <button
+                id="playToneButton"
+                class="primary-button">
+
+                ▶ Play Tone
+
+            </button>
+
+            <button
+                id="stopToneButton"
+                class="secondary-button"
+                disabled>
+
+                ■ Stop
+
+            </button>
+
+        </div>
+
+
+        <div class="response-section">
+
+            <p class="response-question">
+                Could you hear the tone clearly?
+            </p>
+
+            <div class="response-buttons">
+
+                <button
+                    id="heardButton"
+                    class="response-button heard"
+                    disabled>
+
+                    ✓ Yes, I heard it
+
+                </button>
+
+                <button
+                    id="notHeardButton"
+                    class="response-button not-heard"
+                    disabled>
+
+                    ✕ No, I didn't hear it
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <p
+            id="calibrationStatus"
+            class="calibration-status">
+
+            Status: Ready
+
+        </p>
+
+    </div>
+
+
+    <div id="calibrationResult" hidden>
+
+        <div class="result-header">
+
+            <span class="success-icon">✓</span>
+
+            <div>
+                <p class="card-label">
+                    CALIBRATION COMPLETE
+                </p>
+
+                <h4>
+                    Your Hearing Profile
+                </h4>
+            </div>
+
+        </div>
+
+
+        <p class="result-description">
+            This profile shows your relative response to
+            different frequency ranges.
+        </p>
+
+
+        <div id="profileResults"></div>
+
+
+        <div class="profile-summary">
+
+            <div class="summary-icon">
+                ♪
+            </div>
+
+            <div>
+                <strong>
+                    Personalized recommendation
+                </strong>
+
+                <p id="profileSummary">
+                    Your profile is ready.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="result-actions">
+
+            <button
+                id="applyEQButton"
+                class="primary-button">
+
+                Apply Recommended EQ
+
+            </button>
+
+            <button
+                id="restartCalibrationButton"
+                class="secondary-button">
+
+                Calibrate Again
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
 <section id="captionsSection" class="card">
 
     <div class="card-header">
@@ -134,6 +377,7 @@
 
 </section>
 <script src="script.js"></script>
+<script src="calibration.js"></script>
 <script src="captions.js"></script>
 <script src="replay.js"></script>
 
