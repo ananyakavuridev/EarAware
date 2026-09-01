@@ -550,8 +550,7 @@ function applyRecommendedEQ() {
 
     } else {
 
-        profileSummary.textContent =
-            "Calibration profile saved. EQ processing will use these settings.";
+         profileSummary.textContent = "✓ Personalized audio enabled. Ear Aware is now using your calibrated hearing profile.";
     }
 }
 
