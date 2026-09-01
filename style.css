@@ -1,0 +1,21 @@
+#captionsSection {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+#captionArea {
+    border: 1px solid #ddd;
+    padding: 15px;
+    min-height: 100px;
+    margin-top: 10px;
+}
+
+.caption {
+    margin-bottom: 8px;
+}
+
+.interim {
+    font-style: italic;
+}
