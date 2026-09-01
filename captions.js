@@ -1,81 +1,93 @@
-
 const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
 
-
-
-
 let recognition = null;
-
-
 let shouldRecognize = false;
-
-const captionHistory = [];
-
+let captionHistory = [];
+let interimText = "";
 
 const MAX_CAPTIONS = 10;
 
-
-let interimText = "";
-
-
-
-
-const captionButton =
-    document.getElementById("captionButton");
-
-const captionStatus =
-    document.getElementById("captionStatus");
-
-const captionArea =
-    document.getElementById("captionArea");
-
-
+const captionButton = document.getElementById("captionButton");
+const captionStatus = document.getElementById("captionStatus");
+const captionArea = document.getElementById("captionArea");
 
 function initializeSpeechRecognition() {
 
-    
     if (!SpeechRecognition) {
-
         captionStatus.textContent =
             "Status: Live captions are not supported in this browser.";
 
         captionButton.disabled = true;
-
         return;
     }
 
-
     recognition = new SpeechRecognition();
 
-
-    
-    recognition.lang = "en-US";
-
+    recognition.lang = "en-IN";
     recognition.continuous = true;
-
     recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
 
+    recognition.onstart = function() {
+        captionStatus.textContent =
+            "Status: Captions active";
+    };
 
-    
     recognition.onresult = handleSpeechResult;
 
-    recognition.onerror = handleSpeechError;
+    recognition.onerror = function(event) {
 
-    recognition.onend = handleSpeechEnd;
+        console.log("Speech error:", event.error);
+
+        if (event.error === "not-allowed") {
+            shouldRecognize = false;
+            captionStatus.textContent =
+                "Status: Microphone permission denied.";
+        }
+
+        else if (event.error === "no-speech") {
+            captionStatus.textContent =
+                "Status: Listening...";
+        }
+
+        else if (event.error === "network") {
+            captionStatus.textContent =
+                "Status: Network error.";
+        }
+
+        else {
+            captionStatus.textContent =
+                "Status: Speech recognition error.";
+        }
+    };
+
+    recognition.onend = function() {
+
+        if (shouldRecognize) {
+
+            setTimeout(function() {
+
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.log("Restart:", error);
+                }
+
+            }, 300);
+
+        }
+    };
 }
-
-
 
 function startCaptions() {
 
     if (!recognition) {
-        return;
+        initializeSpeechRecognition();
     }
 
     shouldRecognize = true;
-
     interimText = "";
 
     try {
@@ -86,36 +98,27 @@ function startCaptions() {
             "Stop Captions";
 
         captionStatus.textContent =
-            "Status: Captions active";
+            "Status: Starting captions...";
 
-    }
-    catch (error) {
+    } catch (error) {
 
-        console.log(
-            "Recognition could not start:",
-            error
-        );
+        console.log("Start error:", error);
     }
 }
-
-
 
 function stopCaptions() {
 
     shouldRecognize = false;
-
     interimText = "";
 
     if (recognition) {
 
         try {
             recognition.stop();
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error);
         }
     }
-
 
     captionButton.textContent =
         "Start Captions";
@@ -126,13 +129,9 @@ function stopCaptions() {
     updateCaptionUI();
 }
 
-
-
 function handleSpeechResult(event) {
 
     interimText = "";
-
-
 
     for (
         let i = event.resultIndex;
@@ -145,86 +144,56 @@ function handleSpeechResult(event) {
         const text =
             result[0].transcript.trim();
 
-
-        
-        if (result.isFinal) {
-
-            if (text.length > 0) {
-
-                captionHistory.push({
-
-                    text: text,
-
-                    timestamp: Date.now()
-
-                });
-            }
+        if (!text) {
+            continue;
         }
 
+        if (result.isFinal) {
 
-       
-        else {
+            captionHistory.push({
+                text: text,
+                timestamp: Date.now()
+            });
+
+        } else {
 
             interimText += text;
         }
     }
 
-
     cleanupCaptionHistory();
-
     updateCaptionUI();
 }
-
-
 
 function cleanupCaptionHistory() {
 
     const now = Date.now();
 
+    captionHistory =
+        captionHistory.filter(function(caption) {
+            return now - caption.timestamp <= 10000;
+        });
 
-    
-
-    while (
-        captionHistory.length > 0 &&
-        now - captionHistory[0].timestamp > 10000
-    ) {
-
-        captionHistory.shift();
-    }
-
-
-    
-
-    while (
-        captionHistory.length > MAX_CAPTIONS
-    ) {
-
-        captionHistory.shift();
+    if (captionHistory.length > MAX_CAPTIONS) {
+        captionHistory =
+            captionHistory.slice(-MAX_CAPTIONS);
     }
 }
-
-
-
 
 function updateCaptionUI() {
 
     captionArea.innerHTML = "";
 
-
-   
     if (
         captionHistory.length === 0 &&
         !interimText
     ) {
 
         captionArea.textContent =
-            "No captions yet.";
+            "Listening for speech...";
 
         return;
     }
-
-
-    
 
     captionHistory.forEach(function(caption) {
 
@@ -232,115 +201,34 @@ function updateCaptionUI() {
             document.createElement("div");
 
         element.className = "caption";
-
-        element.textContent =
-            caption.text;
+        element.textContent = caption.text;
 
         captionArea.appendChild(element);
     });
-
-
-    
 
     if (interimText) {
 
         const element =
             document.createElement("div");
 
-        element.className =
-            "caption interim";
-
-        element.textContent =
-            interimText;
+        element.className = "caption interim";
+        element.textContent = interimText;
 
         captionArea.appendChild(element);
     }
 }
 
-
-
-function handleSpeechError(event) {
-
-    console.log(
-        "Speech recognition error:",
-        event.error
-    );
-
-
-    if (event.error === "not-allowed") {
-
-        captionStatus.textContent =
-            "Status: Microphone permission denied.";
-
-    }
-
-    else if (event.error === "audio-capture") {
-
-        captionStatus.textContent =
-            "Status: Microphone unavailable.";
-
-    }
-
-    else if (event.error === "network") {
-
-        captionStatus.textContent =
-            "Status: Speech recognition network error.";
-
-    }
-
-    else if (event.error === "no-speech") {
-
-        if (shouldRecognize) {
-
-            captionStatus.textContent =
-                "Status: Listening for speech...";
-        }
-
-    }
-
-    else {
-
-        captionStatus.textContent =
-            "Status: Speech recognition error.";
-    }
-}
-
-
-
-
-function handleSpeechEnd() {
-
-
-    if (shouldRecognize) {
-
-        try {
-
-            recognition.start();
-
-        }
-        catch (error) {
-
-            console.log(
-                "Recognition restart failed:",
-                error
-            );
-        }
-    }
-}
 captionButton.addEventListener(
     "click",
     function() {
 
         if (shouldRecognize) {
-
             stopCaptions();
-
-        }
-        else {
-
+        } else {
             startCaptions();
         }
 
     }
 );
+
 initializeSpeechRecognition();

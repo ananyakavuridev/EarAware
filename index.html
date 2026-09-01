@@ -89,42 +89,53 @@
 
                 </div>
 
-            </section>
+<section id="captionsSection" class="card">
 
-
-            <!-- Calibration placeholder -->
-            <section class="card upcoming-card">
-
-                <div class="upcoming-icon">
-                    01
-                </div>
-
-                <div>
-                    <p class="card-label">NEXT STEP</p>
-                    <h3>Hearing Calibration</h3>
-                    <p>
-                        A short tone-based test will personalize
-                        the audio experience.
-                    </p>
-                </div>
-
-                <span class="coming-soon">
-                    Coming next
-                </span>
-
-            </section>
-
-        </main>
-
-
-        <footer>
-            <p>Ear Aware · Audio assistance prototype</p>
-        </footer>
-
+    <div class="card-header">
+        <div>
+            <p class="card-label">LIVE TRANSCRIPTION</p>
+            <h3>Live Captions</h3>
+        </div>
     </div>
 
+    <div id="captionArea">
+        No captions yet.
+    </div>
 
-    <script src="script.js"></script>
+    <div class="caption-controls">
+        <button id="captionButton">
+            Start Captions
+        </button>
+
+        <p id="captionStatus">
+            Status: Captions stopped
+        </p>
+    </div>
+
+</section>
+
+
+<section id="replaySection" class="card">
+
+    <div class="card-header">
+        <div>
+            <p class="card-label">AUDIO REPLAY</p>
+            <h3>Replay</h3>
+        </div>
+    </div>
+
+    <button id="replayButton">
+        Replay Last 10 Seconds
+    </button>
+
+    <p id="replayStatus">
+        Status: Waiting for audio...
+    </p>
+
+</section>
+<script src="script.js"></script>
+<script src="captions.js"></script>
+<script src="replay.js"></script>
 
 </body>
 </html>
